@@ -1,0 +1,8 @@
+SELECT CI_NO,
+trim(regexp_substr(CRM_SERVIS_ID, '[^,]+', 1, lines.column_value)) CRM_SERVIS_ID
+FROM (SELECT CI_NO, CRM_SERVIS_ID FROM WSCO.WHOLESALE_CMDB WHERE CI_NAME LIKE 'nw_li_cust%' AND CI_STATUS_NAME='ACTIVE' AND CRM_MUSTERI_SEGMENT='TOPTAN' AND CRM_SERVIS_ID LIKE '%,%'),
+TABLE (CAST (MULTISET
+(SELECT LEVEL FROM dual
+CONNECT BY regexp_substr(CRM_SERVIS_ID , '[^,]+', 1, LEVEL) IS NOT NULL
+) AS sys.odciNumberList ) ) lines
+ORDER BY CI_NO, lines.column_value
